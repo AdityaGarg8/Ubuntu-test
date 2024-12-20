@@ -20,9 +20,9 @@ apt install -y apple-t2-audio-config apple-firmware-script
 apt install -y linux-t2=${KERNEL_VERSION}-${PKGREL}-${CODENAME}
 
 # Add udev Rule for AMD GPU Power Management
-#cat <<EOF > /etc/udev/rules.d/30-amdgpu-pm.rules
-#KERNEL=="card[012]", SUBSYSTEM=="drm", DRIVERS=="amdgpu", ATTR{device/power_dpm_force_performance_level}="low"
-#EOF
+cat <<EOF > /etc/udev/rules.d/30-amdgpu-pm.rules
+KERNEL=="card[012]", SUBSYSTEM=="drm", DRIVERS=="amdgpu", ATTR{device/power_dpm_force_performance_level}="low"
+EOF
 
 KERNEL_VERSION=$(dpkg -l | grep -E "^ii  linux-image-[0-9]+\.[0-9]+\.[0-9\.\-]+-generic" | awk '{print $2}' | sed 's/linux-image-\(.*\)-generic/\1/')
 #apt purge -y -qq \
