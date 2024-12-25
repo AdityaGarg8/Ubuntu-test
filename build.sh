@@ -5,15 +5,16 @@ set -eu -o pipefail
 ROOT_PATH=$(pwd)/work
 OUTPUT_PATH=$(pwd)/output
 
-ISO_MOUNT_DIR="$ROOT_PATH/kubuntu-original"    # Temporary mount point for the original ISO
+FLAVOUR=$1
+ISO_MOUNT_DIR="$ROOT_PATH/${FLAVOUR}-original"    # Temporary mount point for the original ISO
 VER=24.10
 CODENAME=oracular
 KERNEL_VERSION=6.12.6
 PKGREL=1
-ISO_IMAGE=kubuntu-24.10-desktop-amd64.iso
-ISO_IMAGE_OUTPUT="${OUTPUT_PATH}/kubuntu-${VER}-${KERNEL_VERSION}-t2-${CODENAME}.iso"
-ISO_WORK_DIR="$ROOT_PATH/kubuntu-iso"
-CHROOT_DIR="$ROOT_PATH/kubuntu-edit"
+ISO_IMAGE=${FLAVOUR}-24.10-desktop-amd64.iso
+ISO_IMAGE_OUTPUT="${OUTPUT_PATH}/${FLAVOUR}-${VER}-${KERNEL_VERSION}-t2-${CODENAME}.iso"
+ISO_WORK_DIR="$ROOT_PATH/${FLAVOUR}-iso"
+CHROOT_DIR="$ROOT_PATH/${FLAVOUR}-edit"
 
 echo "ROOT_PATH=$ROOT_PATH"
 echo "ISO_MOUNT_DIR=$ISO_MOUNT_DIR"  
@@ -33,7 +34,7 @@ apt update && apt update && \
 	xorriso isolinux grub-efi-amd64-bin mtools dosfstools curl
 
 echo >&2 "===]> Info: Download ISO..."
-curl -L -o "$(pwd)/${ISO_IMAGE}" "https://cdimage.ubuntu.com/kubuntu/releases/${VER}/release/${ISO_IMAGE}"
+curl -L -o "$(pwd)/${ISO_IMAGE}" "https://cdimage.ubuntu.com/${FLAVOUR}/releases/${VER}/release/${ISO_IMAGE}"
 
 # Run entrypoint.sh to extract and customize the ISO
 echo >&2 "===]> Info: Starting extraction and customization..."
@@ -44,6 +45,7 @@ echo >&2 "===]> Info: Starting extraction and customization..."
     CHROOT_DIR=${CHROOT_DIR} \\
     ROOT_PATH=${ROOT_PATH} \\
     KERNEL_VERSION=${KERNEL_VERSION} \\
+    FLAVOUR=${FLAVOUR} \\
     $(pwd)/01_edit_iso.sh"
 
 # Enter the Chroot Environment and Apply Customizations
@@ -74,7 +76,7 @@ umount "${CHROOT_DIR}/dev"
 umount "${CHROOT_DIR}/proc"
 umount "${CHROOT_DIR}/sys"
 
-echo >&2 "===]> Info: Squashing Kubuntu file system ... "
+echo >&2 "===]> Info: Squashing $(echo ${FLAVOUR} | cut -c1 | tr '[a-z]' '[A-Z]')$(echo ${FLAVOUR} | cut -c2-) file system ... "
 mksquashfs "$CHROOT_DIR" "$ISO_WORK_DIR/casper/filesystem.squashfs" -comp xz -noappend
 
 # Run create_iso.sh to generate the new ISO
@@ -86,10 +88,11 @@ echo >&2 "===]> Info: Creating iso ... "
     ISO_IMAGE_OUTPUT=${ISO_IMAGE_OUTPUT} \\
     ROOT_PATH=${ROOT_PATH} \\
     T2_KERNEL=${T2_KERNEL} \\
+    FLAVOUR=${FLAVOUR} \\
 	$(pwd)/02_create_iso.sh"
 # split iso
 
-split -b 1500M -x "${OUTPUT_PATH}/kubuntu-${VER}-${KERNEL_VERSION}-t2-${CODENAME}.iso" "${OUTPUT_PATH}/kubuntu-${VER}-${KERNEL_VERSION}-t2-${CODENAME}.iso."
-sha256sum "${OUTPUT_PATH}"/*.iso > "${OUTPUT_PATH}/sha256-kubuntu-${VER}"
+split -b 1500M -x "${OUTPUT_PATH}/${FLAVOUR}-${VER}-${KERNEL_VERSION}-t2-${CODENAME}.iso" "${OUTPUT_PATH}/${FLAVOUR}-${VER}-${KERNEL_VERSION}-t2-${CODENAME}.iso."
+sha256sum "${OUTPUT_PATH}"/*.iso > "${OUTPUT_PATH}/sha256-${FLAVOUR}-${VER}"
 
 

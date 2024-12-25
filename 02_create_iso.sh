@@ -33,7 +33,7 @@ mkdir -p "$(dirname "$ISO_IMAGE_OUTPUT")"
 xorriso -as mkisofs \
   -iso-level 3 \
   -full-iso9660-filenames \
-  -volid "T2-KUBUNTU" \
+  -volid "T2-$(echo ${FLAVOUR} | tr '[a-z]' '[A-Z]')" \
   -eltorito-boot boot/grub/i386-pc/eltorito.img \
   -no-emul-boot \
   -boot-load-size 4 \
