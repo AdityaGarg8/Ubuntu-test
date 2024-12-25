@@ -38,7 +38,7 @@ jobs:
           github_token: ${{ secrets.PAT }}
           branch: kubuntuMainline
 
-  ISO:
+  ISO-Kubuntu:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
       - name: Run build script
         run: |
           chmod +x ${{ github.workspace }}/build_in_docker.sh
-          ${{ github.workspace }}/build_in_docker.sh
+          ${{ github.workspace }}/build_in_docker.sh kubuntu
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
