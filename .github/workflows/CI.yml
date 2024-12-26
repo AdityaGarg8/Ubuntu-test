@@ -55,7 +55,7 @@ jobs:
       - name: Run build script
         run: |
           chmod +x ${{ github.workspace }}/build_in_docker.sh
-          ${{ github.workspace }}/build_in_docker.sh kubuntu
+          ${{ github.workspace }}/build_in_docker.sh ubuntu-unity
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
@@ -80,7 +80,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update the json
-        if: github.ref == 'refs/heads/kubuntuLTS'
+        if: github.ref == 'refs/heads/kubuntuL'
         run: |
           git clone https://github.com/t2linux/wiki.git
           cd wiki/docs/tools
@@ -112,7 +112,7 @@ jobs:
           cd -
 
       - name: Push updated links to t2linux.org
-        if: github.ref == 'refs/heads/kubuntuLTS'
+        if: github.ref == 'refs/heads/kubuntuL'
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.PAT }}
