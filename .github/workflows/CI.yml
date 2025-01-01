@@ -55,7 +55,7 @@ jobs:
       - name: Run build script
         run: |
           chmod +x ${{ github.workspace }}/build_in_docker.sh
-          ${{ github.workspace }}/build_in_docker.sh ubuntu-unity
+          ${{ github.workspace }}/build_in_docker.sh ubuntu
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4

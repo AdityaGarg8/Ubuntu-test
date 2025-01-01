@@ -7,8 +7,8 @@ FLAVOUR=$1
 ISO_MOUNT_DIR="$ROOT_PATH/${FLAVOUR}-original"    # Temporary mount point for the original ISO
 VER=24.04
 CODENAME=noble
-KERNEL_VERSION=6.12.6
-PKGREL=1
+KERNEL_VERSION=6.12.7
+PKGREL=3
 
 ISO_IMAGE=${FLAVOUR}-24.04.1-desktop-amd64.iso
 ISO_IMAGE_OUTPUT="${OUTPUT_PATH}/${FLAVOUR}-${VER}-${KERNEL_VERSION}-t2-${CODENAME}.iso"
@@ -35,7 +35,7 @@ apt update && apt update && \
 
 echo >&2 "===]> Info: Download ISO..."
 
-curl -L -o "$(pwd)/${ISO_IMAGE}" "https://cdimage.ubuntu.com/${FLAVOUR}/releases/${VER}/release/${ISO_IMAGE}"
+curl -L -o "$(pwd)/${ISO_IMAGE}" "https://mirror.pilotfiber.com/ubuntu-iso/noble/ubuntu-24.04.1-desktop-amd64.iso"
  
 # Run entrypoint.sh to extract and customize the ISO
 echo >&2 "===]> Info: Starting extraction and customization..."
@@ -78,7 +78,7 @@ umount "${CHROOT_DIR}/proc"
 umount "${CHROOT_DIR}/sys"
 
 echo >&2 "===]> Info: Squashing $(echo ${FLAVOUR} | cut -c1 | tr '[a-z]' '[A-Z]')$(echo ${FLAVOUR} | cut -c2-) file system ... "
-mksquashfs "$CHROOT_DIR" "$ISO_WORK_DIR/casper/filesystem.squashfs" -comp xz -noappend
+mksquashfs "$CHROOT_DIR" "$ISO_WORK_DIR/casper/minimal.squashfs" -comp xz -noappend
 
 # Run create_iso.sh to generate the new ISO
 # echo "Creating the custom ISO..."

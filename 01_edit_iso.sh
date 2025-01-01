@@ -12,7 +12,7 @@ fi
 mount -o loop "$(pwd)/$ISO_IMAGE" "$ISO_MOUNT_DIR"
 rsync -a "$ISO_MOUNT_DIR/" "$ISO_WORK_DIR"
 umount "$ISO_MOUNT_DIR"
-unsquashfs -d "$CHROOT_DIR" "$ISO_WORK_DIR/casper/filesystem.squashfs"
+unsquashfs -d "$CHROOT_DIR" "$ISO_WORK_DIR/casper/minimal.squashfs"
 rm "$(pwd)/$ISO_IMAGE"
 
 
