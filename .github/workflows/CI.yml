@@ -25,6 +25,7 @@ jobs:
           persist-credentials: false
 
       - name: 'Push new version to kubuntuMainline'
+        if: false
         id: publish
         run: |
          sed -i "s/KERNEL_VERSION=6.*/KERNEL_VERSION=${{ env.ver }}/g" build.sh
@@ -41,6 +42,13 @@ jobs:
   ISO-Kubuntu:
     runs-on: ubuntu-latest
     steps:
+      - name: Free up disk space for the CI
+        uses: AdityaGarg8/remove-unwanted-software@v4
+        with:
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+
       - uses: actions/checkout@v4
 
       - name: Generate Tag
